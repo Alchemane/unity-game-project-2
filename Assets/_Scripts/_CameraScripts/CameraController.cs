@@ -7,7 +7,6 @@ namespace GameRoot.InGame.Navigation.CameraNavigation
 {
     public class CameraController : MonoBehaviour
     {
-
         public Transform followTransform;
         public Transform cameraTransform;
 
@@ -38,7 +37,7 @@ namespace GameRoot.InGame.Navigation.CameraNavigation
         // Update is called once per frame
         void Update()
         {
-            // incomplete follow selected game object
+            // wip follow selected game object
             if (followTransform != null)
             {
                 transform.position = followTransform.position;
@@ -48,20 +47,34 @@ namespace GameRoot.InGame.Navigation.CameraNavigation
                 HandleKeyboardInput();
                 HandleMouseInput();
             }
-
+            // cancel follow game tracked object
             if (Input.GetKeyDown(KeyCode.Escape))
             {
                 followTransform = null;
             }
+            // Boundary check
+            newPosition = new Vector3(
+                Mathf.Clamp(newPosition.x, minX, maxX),
+                newPosition.y,
+                Mathf.Clamp(newPosition.z, minZ, maxZ)
+            );
         }
 
         void HandleMouseInput()
         {
+            // is not over user interface elements
             if (!EventSystem.current.IsPointerOverGameObject())
             {
                 if (Input.mouseScrollDelta.y != 0)
                 {
                     newZoom += Input.mouseScrollDelta.y * zoomAmount;
+
+                    // Zoom limit
+                    newZoom = new Vector3(
+                        Mathf.Clamp(newZoom.x, minZoomX, maxZoomX),
+                        Mathf.Clamp(newZoom.y, minZoomY, maxZoomY),
+                        Mathf.Clamp(newZoom.z, minZoomZ, maxZoomZ)
+                    );
                 }
 
                 //navigate the world using mouse 1
