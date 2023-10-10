@@ -34,7 +34,28 @@ public class MapGeneration : MonoBehaviour
     // locate random hexagon
     Vector3 GetRandomNeighbor(GameObject hexagon)
     {
-        
-        return new Vector3();
+        Bounds hexagonBounds = hexagon.GetComponent<Renderer>().bounds;
+        float hexagonWidth = hexagonBounds.size.x;
+        float hexagonHeight = hexagonBounds.size.y;
+
+        Vector3 currentPosition = hexagon.transform.position;
+
+        Vector3[] possibleDirections = {
+            new Vector3(hexagonWidth, 0, 0),
+            new Vector3(-hexagonWidth, 0, 0),
+            new Vector3(0, 0, hexagonHeight),
+            new Vector3(0, 0, -hexagonHeight),
+        };
+
+        // logic here for if hexagon present in the random possible direction
+
+        //while()
+
+        int randomIndex = Random.Range(0, possibleDirections.Length);
+        Vector3 randomDirection = possibleDirections[randomIndex];
+
+        Vector3 newPosition = currentPosition + randomDirection;
+
+        return newPosition;
     }
 }
