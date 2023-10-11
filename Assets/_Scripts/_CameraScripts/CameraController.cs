@@ -29,6 +29,10 @@ namespace GameRoot.InGame.Navigation.CameraNavigation
         private Vector3 rotateCurrentPosition;
 
         private MapGeneration mapGeneration;
+        private Vector3 minBounds;
+        private Vector3 maxBounds;
+        private float maxZoomOut;
+        public float minZoomIn = 5f;
 
         // Start is called before the first frame update
         void Start()
@@ -38,6 +42,12 @@ namespace GameRoot.InGame.Navigation.CameraNavigation
             newPosition = transform.position;
             newRotation = transform.rotation;
             newZoom = cameraTransform.localPosition;
+
+            // get map data
+            minBounds = mapGeneration.GetMinBounds();
+            maxBounds = mapGeneration.GetMaxBounds();
+
+            maxZoomOut = Mathf.Max(maxBounds.x - minBounds.x, maxBounds.z - minBounds.z);
         }
 
         // Update is called once per frame
@@ -50,7 +60,7 @@ namespace GameRoot.InGame.Navigation.CameraNavigation
             }
             else
             {
-                HandleKeyboardInput();
+                HandleMovementInput();
                 HandleMouseInput();
             }
             // cancel follow game tracked object
@@ -58,6 +68,13 @@ namespace GameRoot.InGame.Navigation.CameraNavigation
             {
                 followTransform = null;
             }
+
+            // clamping the camera within the map boundaries
+            float confinedX = Mathf.Clamp(transform.position.x, minBounds.x, maxBounds.x);
+            float confinedZ = Mathf.Clamp(transform.position.z, minBounds.z, maxBounds.z);
+
+            // Update the camera position
+            transform.position = new Vector3(confinedX, transform.position.y, confinedZ);
         }
 
         void HandleMouseInput()
@@ -117,7 +134,7 @@ namespace GameRoot.InGame.Navigation.CameraNavigation
             }
         }
 
-        void HandleKeyboardInput()
+        void HandleMovementInput()
         {
             // shift speed
             if (Input.GetKey(KeyCode.LeftShift))
@@ -166,6 +183,18 @@ namespace GameRoot.InGame.Navigation.CameraNavigation
             {
                 newZoom -= zoomAmount;
             }
+            
+
+            // clamping the camera's zoom
+            float confinedY = Mathf.Clamp(newZoom.y, minZoomIn, maxZoomOut);
+            newZoom = new Vector3(newZoom.x, confinedY, newZoom.z);
+
+            // clamping the camera within the map boundaries
+            float confinedX = Mathf.Clamp(newPosition.x, minBounds.x, maxBounds.x);
+            float confinedZ = Mathf.Clamp(newPosition.z, minBounds.z, maxBounds.z);
+
+            // clamping the newPosition with the confined values
+            newPosition = new Vector3(confinedX, newPosition.y, confinedZ);
 
             transform.position = Vector3.Lerp(transform.position, newPosition, Time.deltaTime * movementTime);
             transform.rotation = Quaternion.Lerp(transform.rotation, newRotation, Time.deltaTime * movementTime);

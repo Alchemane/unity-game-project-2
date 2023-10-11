@@ -310,13 +310,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   followTransform: {fileID: 0}
   cameraTransform: {fileID: 963194228}
-  gameMaster: {fileID: 0}
+  gameMaster: {fileID: 191596535}
   normalSpeed: 0.5
   fastSpeed: 3
   movementSpeed: 1
   movementTime: 5
   rotationAmount: 0.5
   zoomAmount: {x: 0, y: -5, z: 5}
+  minZoomIn: 10
 --- !u!1 &940825349
 GameObject:
   m_ObjectHideFlags: 0
