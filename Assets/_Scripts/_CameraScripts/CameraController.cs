@@ -1,3 +1,4 @@
+using GameRoot.InGame.Environment.EnvironmentGeneration;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,7 +10,7 @@ namespace GameRoot.InGame.Navigation.CameraNavigation
     {
         public Transform followTransform; // wip
         public Transform cameraTransform;
-        public GameObject ground;
+        public GameObject gameMaster;
 
         // public inspector fields
         public float normalSpeed;
@@ -19,17 +20,21 @@ namespace GameRoot.InGame.Navigation.CameraNavigation
         public float rotationAmount;
         public Vector3 zoomAmount;
 
-        public Vector3 newPosition;
+        private Vector3 newPosition;
         private Quaternion newRotation;
-        public Vector3 newZoom;
+        private Vector3 newZoom;
         private Vector3 dragStartPosition;
         private Vector3 dragCurrentPosition;
         private Vector3 rotateStartPosition;
         private Vector3 rotateCurrentPosition;
 
+        private MapGeneration mapGeneration;
+
         // Start is called before the first frame update
         void Start()
         {
+            mapGeneration = gameMaster.GetComponent<MapGeneration>();
+
             newPosition = transform.position;
             newRotation = transform.rotation;
             newZoom = cameraTransform.localPosition;

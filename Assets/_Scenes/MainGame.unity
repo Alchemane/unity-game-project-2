@@ -153,7 +153,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hexagonPrefab: {fileID: 2435268543134023508, guid: e455a4107d17814479ba0c593d09013f, type: 3}
-  mapSize: 100
+  mapSize: 10
 --- !u!4 &191596537
 Transform:
   m_ObjectHideFlags: 0
@@ -310,15 +310,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   followTransform: {fileID: 0}
   cameraTransform: {fileID: 963194228}
-  ground: {fileID: 0}
+  gameMaster: {fileID: 0}
   normalSpeed: 0.5
   fastSpeed: 3
   movementSpeed: 1
   movementTime: 5
   rotationAmount: 0.5
   zoomAmount: {x: 0, y: -5, z: 5}
-  newPosition: {x: 0, y: 0, z: 0}
-  newZoom: {x: 0, y: 0, z: 0}
 --- !u!1 &940825349
 GameObject:
   m_ObjectHideFlags: 0
