@@ -1,52 +1,44 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using UnityEngine;
 
 public class MapGeneration : MonoBehaviour
 {
     public GameObject hexagonPrefab;
-
     public int mapSize;
     List<GameObject> frontier = new List<GameObject>();
-    Dictionary<Vector3, GameObject> hexagonPositions = new Dictionary<Vector3, GameObject>();
+    HashSet<Vector3> occupiedPositions = new HashSet<Vector3>();
 
-    // Start is called before the first frame update
     void Start()
     {
-        GameObject originHexagon = Instantiate(hexagonPrefab, Vector3.zero, Quaternion.identity);
-        frontier.Add(originHexagon);
-        hexagonPositions[Vector3.zero] = originHexagon; // Initialize with origin hexagon
+        // Place the initial hexagon
+        GameObject initialHexagon = Instantiate(hexagonPrefab, Vector3.zero, Quaternion.identity);
+        frontier.Add(initialHexagon);
+        occupiedPositions.Add(Vector3.zero);
 
+        // Generate the rest of the hexagons
         for (int i = 0; i < mapSize - 1; i++)
         {
             GenerateNeighbor();
         }
     }
 
-    // generate hexagon from random hexagon
     void GenerateNeighbor()
     {
-        GameObject currentHexagon = frontier[Random.Range(0, frontier.Count)];
+        GameObject currentHexagon = frontier[frontier.Count - 1]; // Get the last hexagon in the frontier
         Vector3 newPosition = GetRandomNeighborPosition(currentHexagon);
-
-        // Check if the position is already occupied
-        while (hexagonPositions.ContainsKey(newPosition))
-        {
-            // Generate a new random position
-            newPosition = GetRandomNeighborPosition(currentHexagon);
-        }
 
         GameObject newHexagon = Instantiate(hexagonPrefab, newPosition, Quaternion.identity);
         frontier.Add(newHexagon);
-        hexagonPositions[newPosition] = newHexagon; // Store the new position
+        occupiedPositions.Add(newPosition);
     }
 
-    // locate random hexagon
     Vector3 GetRandomNeighborPosition(GameObject hexagon)
     {
         Bounds hexagonBounds = hexagon.GetComponent<Renderer>().bounds;
         float hexagonWidth = hexagonBounds.size.x;
-        float hexagonHeight = hexagonBounds.size.y;
 
         Vector3 currentPosition = hexagon.transform.position;
 
@@ -60,12 +52,7 @@ public class MapGeneration : MonoBehaviour
             possibleDirections[i] = new Vector3(x, 0, z);
         }
 
-
-
-
-
-
-        int randomIndex = Random.Range(0, possibleDirections.Length);
+        int randomIndex = UnityEngine.Random.Range(0, possibleDirections.Length);
         Vector3 randomDirection = possibleDirections[randomIndex];
 
         Vector3 newPosition = currentPosition + randomDirection;
