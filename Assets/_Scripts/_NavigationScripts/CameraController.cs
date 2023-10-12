@@ -32,7 +32,7 @@ namespace GameRoot.InGame.Navigation.CameraNavigation
         private Vector3 minBounds;
         private Vector3 maxBounds;
         private float maxZoomOut;
-        public float minZoomIn = 5f;
+        public float minZoomIn;
 
         // Start is called before the first frame update
         void Start()
@@ -47,6 +47,7 @@ namespace GameRoot.InGame.Navigation.CameraNavigation
             minBounds = mapGeneration.GetMinBounds();
             maxBounds = mapGeneration.GetMaxBounds();
 
+            //zoom ceiling
             maxZoomOut = Mathf.Max(maxBounds.x - minBounds.x, maxBounds.z - minBounds.z);
         }
 
@@ -85,7 +86,8 @@ namespace GameRoot.InGame.Navigation.CameraNavigation
                 // scroll wheel zoom
                 if (Input.mouseScrollDelta.y != 0)
                 {
-                    newZoom += Input.mouseScrollDelta.y * zoomAmount;
+                    float zoomFactor = Mathf.Log(Mathf.Abs(newZoom.y) + 1) + 1; // Exponential factor
+                    newZoom += Input.mouseScrollDelta.y * zoomAmount * zoomFactor;
                 }
                 //navigate the world using mouse 1
                 if (Input.GetMouseButtonDown(0))
@@ -136,6 +138,7 @@ namespace GameRoot.InGame.Navigation.CameraNavigation
 
         void HandleMovementInput()
         {
+            float zoomFactor = Mathf.Log(Mathf.Abs(newZoom.y) + 1) + 1;
             // shift speed
             if (Input.GetKey(KeyCode.LeftShift))
             {
@@ -173,15 +176,15 @@ namespace GameRoot.InGame.Navigation.CameraNavigation
             {
                 newRotation *= Quaternion.Euler(Vector3.up * -rotationAmount);
             }
-
+            
             // zoom keys
             if (Input.GetKey(KeyCode.R))
             {
-                newZoom += zoomAmount;
+                newZoom.y += zoomAmount.y * zoomFactor;
             }
             if (Input.GetKey(KeyCode.F))
             {
-                newZoom -= zoomAmount;
+                newZoom.y -= zoomAmount.y * zoomFactor;
             }
 
             // clamping the camera's zoom
@@ -196,6 +199,7 @@ namespace GameRoot.InGame.Navigation.CameraNavigation
             // clamping the newPosition with the confined values
             newPosition = new Vector3(confinedX, newPosition.y, confinedZ);
 
+            // apply all transforms
             transform.position = Vector3.Lerp(transform.position, newPosition, Time.deltaTime * movementTime);
             transform.rotation = Quaternion.Lerp(transform.rotation, newRotation, Time.deltaTime * movementTime);
             cameraTransform.localPosition = Vector3.Lerp(cameraTransform.localPosition, newZoom, Time.deltaTime * movementTime);

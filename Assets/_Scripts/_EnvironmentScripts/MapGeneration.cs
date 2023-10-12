@@ -32,7 +32,6 @@ namespace GameRoot.InGame.Environment.EnvironmentGeneration
         void GenerateNeighbor()
         {
             int backtrackIndex = frontier.Count - 1;
-
             while (backtrackIndex >= 0)
             {
                 GameObject currentHexagon = frontier[backtrackIndex];
@@ -93,6 +92,7 @@ namespace GameRoot.InGame.Environment.EnvironmentGeneration
             maxBounds = new Vector3(Mathf.Max(maxBounds.x, newPosition.x), 0, Mathf.Max(maxBounds.z, newPosition.z));
         }
 
+        //getters
         public Vector3 GetMinBounds()
         {
             return minBounds;
