@@ -183,11 +183,11 @@ namespace GameRoot.InGame.Navigation.CameraNavigation
             {
                 newZoom -= zoomAmount;
             }
-            
 
             // clamping the camera's zoom
             float confinedY = Mathf.Clamp(newZoom.y, minZoomIn, maxZoomOut);
-            newZoom = new Vector3(newZoom.x, confinedY, newZoom.z);
+            float confinedZoomZ = Mathf.Clamp(newZoom.z, -maxZoomOut, -minZoomIn); // clamp z axis
+            newZoom = new Vector3(newZoom.x, confinedY, confinedZoomZ);
 
             // clamping the camera within the map boundaries
             float confinedX = Mathf.Clamp(newPosition.x, minBounds.x, maxBounds.x);
