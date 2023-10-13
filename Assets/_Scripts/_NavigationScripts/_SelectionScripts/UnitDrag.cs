@@ -8,20 +8,15 @@ namespace GameRoot.InGame.Navigation.SelectionSystem.DragSelection
     public class UnitDrag : MonoBehaviour
     {
         private Camera mainCamera;
-        public RectTransform selectionBoxGraphic;
-        private Rect selectionBox;
+        private Rect selectionRect;
         private Vector2 startPosition;
         private Vector2 endPosition;
         public LayerMask selectableUnits;
-
 
         // Start is called before the first frame update
         void Start()
         {
             mainCamera = Camera.main;
-            startPosition = Vector2.zero;
-            endPosition = Vector2.zero;
-            DrawBoxGraphic();
         }
 
         // Update is called once per frame
@@ -29,13 +24,12 @@ namespace GameRoot.InGame.Navigation.SelectionSystem.DragSelection
         {
             if (Input.GetMouseButtonDown(0))
             {
-                startPosition = Input.mousePosition;
-                selectionBox = new Rect();
+                startPosition = new Vector2(Input.mousePosition.x, Screen.height - Input.mousePosition.y);
+                selectionRect = new Rect();
             }
             if (Input.GetMouseButton(0))
             {
-                endPosition = Input.mousePosition;
-                DrawBoxGraphic();
+                endPosition = new Vector2(Input.mousePosition.x, Screen.height - Input.mousePosition.y);
                 DrawSelection();
             }
             if (Input.GetMouseButtonUp(0))
@@ -43,45 +37,23 @@ namespace GameRoot.InGame.Navigation.SelectionSystem.DragSelection
                 SelectUnits();
                 startPosition = Vector2.zero;
                 endPosition = Vector2.zero;
-                DrawBoxGraphic();
+                selectionRect = new Rect();  // Reset the rectangle
             }
         }
 
-        public void DrawBoxGraphic()
+        void DrawSelection()
         {
-            Vector2 boxStart = startPosition;
-            Vector2 boxEnd = endPosition;
-            Vector2 boxCenter = (boxStart - boxEnd) / 2;
-            selectionBoxGraphic.position = boxCenter;
-            Vector2 boxSize = new Vector2(Mathf.Abs(boxStart.x - boxEnd.x), Mathf.Abs(boxStart.y - boxEnd.y));
-            selectionBoxGraphic.sizeDelta = boxSize;
+            selectionRect.xMin = Mathf.Min(startPosition.x, endPosition.x);
+            selectionRect.xMax = Mathf.Max(startPosition.x, endPosition.x);
+            selectionRect.yMin = Screen.height - Mathf.Max(startPosition.y, endPosition.y);
+            selectionRect.yMax = Screen.height - Mathf.Min(startPosition.y, endPosition.y);
         }
 
-        public void DrawSelection()
+        void OnGUI()
         {
-            if (Input.mousePosition.x < startPosition.x)
+            if (selectionRect.width > 0 && selectionRect.height > 0)
             {
-                //dragging left
-                selectionBox.xMin = Input.mousePosition.x;
-                selectionBox.xMax = startPosition.x;
-            }
-            else
-            {
-                //dragging right
-                selectionBox.xMin = startPosition.x;
-                selectionBox.xMax = Input.mousePosition.x;
-            }
-            if (Input.mousePosition.y < startPosition.y)
-            {
-                //dragging down
-                selectionBox.yMin = Input.mousePosition.y;
-                selectionBox.yMax = startPosition.y;
-            }
-            else
-            {
-                //dragging up
-                selectionBox.yMin = startPosition.y;
-                selectionBox.yMax = Input.mousePosition.y;
+                GUI.Box(new Rect(selectionRect.xMin, Screen.height - selectionRect.yMax, selectionRect.width, selectionRect.height), "");
             }
         }
 
@@ -89,9 +61,11 @@ namespace GameRoot.InGame.Navigation.SelectionSystem.DragSelection
         {
             foreach (var unit in UnitSelectionManager.Instance.unitList)
             {
-                if (selectionBox.Contains(mainCamera.WorldToScreenPoint(unit.transform.position)))
+                Vector3 screenPos = mainCamera.WorldToScreenPoint(unit.transform.position);
+                screenPos.y = Screen.height - screenPos.y;  // Flip the y-coordinate
+                if (selectionRect.Contains(screenPos))
                 {
-                    if (unit.layer == selectableUnits)
+                    if (((1 << unit.layer) & selectableUnits) != 0)
                     {
                         UnitSelectionManager.Instance.DragSelect(unit);
                     }

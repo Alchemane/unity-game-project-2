@@ -1,18 +1,34 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
-public class UnitMovement : MonoBehaviour
+namespace GameRoot.InGame.Units.Movement
 {
-    // Start is called before the first frame update
-    void Start()
+    public class UnitMovement : MonoBehaviour
     {
-        
-    }
+        Camera mainCamera;
+        NavMeshAgent navMeshAgent;
+        public LayerMask ground;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        public void Start()
+        {
+            mainCamera = Camera.main;
+            navMeshAgent = GetComponent<NavMeshAgent>();
+        }
+
+        public void Update()
+        {
+            if (Input.GetMouseButtonDown(1))
+            {
+                RaycastHit hit;
+                Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+
+                if (Physics.Raycast(ray, out hit, Mathf.Infinity, ground))
+                {
+                    navMeshAgent.SetDestination(hit.point);
+                }
+            }
+        }
     }
 }

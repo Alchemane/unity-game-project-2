@@ -8,7 +8,7 @@ namespace GameRoot.InGame.Navigation.SelectionSystem.ClickSelection
     public class UnitClick : MonoBehaviour
     {
         private Camera mainCamera;
-        //public GameObject groundMarker;
+        public GameObject groundMarker;
         private Vector3 movePoint;
         public LayerMask selectableUnits;
         public LayerMask ground;
@@ -54,12 +54,13 @@ namespace GameRoot.InGame.Navigation.SelectionSystem.ClickSelection
                 if (Physics.Raycast(ray, out hit, Mathf.Infinity, ground))
                 {
                     movePoint = hit.point;
-                    // groundmarker enabled and transform to movepoint here
+                    groundMarker.transform.position = movePoint;
+                    groundMarker.SetActive(true);
                 }
             }
             if (Input.GetMouseButtonDown(0))
             {
-                // ground marker disabled here
+                groundMarker.SetActive(false);
             }
         }
     }

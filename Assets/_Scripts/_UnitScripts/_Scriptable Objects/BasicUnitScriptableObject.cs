@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace GameRoot.InGame.Units.BasicUnit.UnitScriptableObject
 {
+    [CreateAssetMenu(fileName = "New Unit", menuName = "Scriptable Unit")]
     public class BasicUnitScriptableObject : ScriptableObject
     {
         public string unitType;

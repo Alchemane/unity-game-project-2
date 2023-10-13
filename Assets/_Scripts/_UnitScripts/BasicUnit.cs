@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using GameRoot.InGame.Units.BasicUnit.UnitScriptableObject;
+using GameRoot.InGame.Navigation.SelectionSystem.UnitManager;
 
 namespace GameRoot.InGame.Units.BasicUnit
 {
@@ -48,7 +49,7 @@ namespace GameRoot.InGame.Units.BasicUnit
         // Start is called before the first frame update
         void Start()
         {
-
+            UnitSelectionManager.Instance.unitList.Add(gameObject);
         }
 
         // getters

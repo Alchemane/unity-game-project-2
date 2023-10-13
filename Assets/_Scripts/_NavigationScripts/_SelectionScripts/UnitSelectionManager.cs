@@ -1,13 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using GameRoot.InGame.Units.Movement;
 
 namespace GameRoot.InGame.Navigation.SelectionSystem.UnitManager
 {
     public class UnitSelectionManager : MonoBehaviour
     {
         public List<GameObject> unitList = new List<GameObject>();
-        private List<GameObject> selectedUnits = new List<GameObject>();
+        public List<GameObject> selectedUnits = new List<GameObject>();
 
         private static UnitSelectionManager _instance;
         public static UnitSelectionManager Instance {  get { return _instance; } }
@@ -27,20 +28,20 @@ namespace GameRoot.InGame.Navigation.SelectionSystem.UnitManager
         public void AddSelection(GameObject unit)
         {
             selectedUnits.Add(unit);
-            // movement enabled here
+            unit.GetComponent<UnitMovement>().enabled = true;
         }
 
         public void RemoveSelection(GameObject unit)
         {
             selectedUnits.Remove(unit);
-            // movement disabled here
+            unit.GetComponent<UnitMovement>().enabled = false;
         }
 
-        public void ClickSelect(GameObject unitToAdd)
+        public void ClickSelect(GameObject unit)
         {
             DeselectAll();
-            AddSelection(unitToAdd);
-            // selected indicator enabled here
+            AddSelection(unit);
+            unit.transform.GetChild(0).gameObject.SetActive(true);
         }
 
         public void ShiftSelect(GameObject unit)
@@ -48,20 +49,21 @@ namespace GameRoot.InGame.Navigation.SelectionSystem.UnitManager
             if(selectedUnits.Contains(unit))
             {
                 RemoveSelection(unit);
-                // selected indicator disabled here
+                unit.transform.GetChild(0).gameObject.SetActive(false);
             }
             else
             {
                 AddSelection(unit);
-                // selected indicator enabled here
+                unit.transform.GetChild(0).gameObject.SetActive(true);
             }
         }
 
         public void DragSelect(GameObject unit) 
         { 
-            if(!selectedUnits.Contains(unit))
+            if (!selectedUnits.Contains(unit))
             {
                 AddSelection(unit);
+                unit.transform.GetChild(0).gameObject.SetActive(true);
             }
         }
 
@@ -71,29 +73,11 @@ namespace GameRoot.InGame.Navigation.SelectionSystem.UnitManager
             {
                 if (unit != null)
                 {
-                    // selected indicator disabled here
-                    // unit movement disabled here
+                    unit.transform.GetChild(0).gameObject.SetActive(false);
+                    unit.GetComponent<UnitMovement>().enabled = false;
                 }
             }
             selectedUnits.Clear();
-        }
-
-
-
-
-
-
-
-        // Start is called before the first frame update
-        void Start()
-        {
-
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
         }
     }
 }
