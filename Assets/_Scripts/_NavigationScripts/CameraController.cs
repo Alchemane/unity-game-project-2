@@ -89,8 +89,8 @@ namespace GameRoot.InGame.Navigation.CameraNavigation
                     float zoomFactor = Mathf.Log(Mathf.Abs(newZoom.y) + 1) + 1; // Exponential factor
                     newZoom += Input.mouseScrollDelta.y * zoomAmount * zoomFactor;
                 }
-                //navigate the world using mouse 1
-                if (Input.GetMouseButtonDown(0))
+                //navigate the world using middle mouse
+                if (Input.GetMouseButtonDown(2))
                 {
                     Plane plane = new Plane(Vector3.up, Vector3.zero);
 
@@ -103,7 +103,7 @@ namespace GameRoot.InGame.Navigation.CameraNavigation
                         dragStartPosition = ray.GetPoint(entry);
                     }
                 }
-                if (Input.GetMouseButton(0))
+                if (Input.GetMouseButton(2))
                 {
                     Plane plane = new Plane(Vector3.up, Vector3.zero);
 
@@ -118,7 +118,7 @@ namespace GameRoot.InGame.Navigation.CameraNavigation
                         newPosition = transform.position + dragStartPosition - dragCurrentPosition;
                     }
                 }
-                //rotate the world using mouse 3
+                //rotate the world using mouse 2
                 if (Input.GetMouseButtonDown(1))
                 {
                     rotateStartPosition = Input.mousePosition;

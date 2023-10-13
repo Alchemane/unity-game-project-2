@@ -1,116 +1,99 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Diagnostics;
 
-namespace GameRoot.InGame.Navigation.SelectionSystem.SelectionManager
+namespace GameRoot.InGame.Navigation.SelectionSystem.UnitManager
 {
     public class UnitSelectionManager : MonoBehaviour
     {
-        private List<SelectableUnit> selectedUnits = new List<SelectableUnit>();
-        private Vector3 startPos;
-        private Vector3 endPos;
-        private bool isSelecting = false;
+        public List<GameObject> unitList = new List<GameObject>();
+        private List<GameObject> selectedUnits = new List<GameObject>();
 
-        void Update()
+        private static UnitSelectionManager _instance;
+        public static UnitSelectionManager Instance {  get { return _instance; } }
+
+        public void Awake()
         {
-            // Handle mouse input for selection box
-            HandleSelectionBox();
-
-            // Handle unit selection logic
-            HandleUnitSelection();
-        }
-
-        public void SelectUnit(SelectableUnit unit, bool multiSelect = false)
-        {
-            if (!multiSelect)
+            if (_instance != null && _instance != this)
             {
-                DeselectAllUnits();
+                Destroy(this.gameObject);
             }
-
-            selectedUnits.Add(unit);
-            unit.Select();
+            else
+            {
+                _instance = this;
+            }
         }
 
-        public void DeselectUnit(SelectableUnit unit)
+        public void AddSelection(GameObject unit)
+        {
+            selectedUnits.Add(unit);
+            // movement enabled here
+        }
+
+        public void RemoveSelection(GameObject unit)
         {
             selectedUnits.Remove(unit);
-            unit.Deselect();
+            // movement disabled here
         }
 
-        public void DeselectAllUnits()
+        public void ClickSelect(GameObject unitToAdd)
         {
-            foreach (SelectableUnit unit in selectedUnits)
+            DeselectAll();
+            AddSelection(unitToAdd);
+            // selected indicator enabled here
+        }
+
+        public void ShiftSelect(GameObject unit)
+        {
+            if(selectedUnits.Contains(unit))
             {
-                unit.Deselect();
+                RemoveSelection(unit);
+                // selected indicator disabled here
+            }
+            else
+            {
+                AddSelection(unit);
+                // selected indicator enabled here
+            }
+        }
+
+        public void DragSelect(GameObject unit) 
+        { 
+            if(!selectedUnits.Contains(unit))
+            {
+                AddSelection(unit);
+            }
+        }
+
+        public void DeselectAll()
+        {
+            foreach(var unit in selectedUnits)
+            {
+                if (unit != null)
+                {
+                    // selected indicator disabled here
+                    // unit movement disabled here
+                }
             }
             selectedUnits.Clear();
         }
 
-        void HandleSelectionBox()
+
+
+
+
+
+
+        // Start is called before the first frame update
+        void Start()
         {
-            if (Input.GetMouseButtonDown(0))
-            {
-                isSelecting = true;
-                startPos = Input.mousePosition;
-            }
-            if (Input.GetMouseButtonUp(0))
-            {
-                isSelecting = false;
-            }
-            if (isSelecting)
-            {
-                endPos = Input.mousePosition;
-                // TODO: Draw the selection box based on startPos and endPos
-            }
+
         }
 
-        void HandleUnitSelection()
+        // Update is called once per frame
+        void Update()
         {
-            if (isSelecting)
-            {
-                // Clear previously selected units
-                selectedUnits.Clear();
 
-                // TODO: Loop through all units and check if they are within the selection box
-                // If they are, add them to selectedUnits
-            }
-        }
-
-
-        private bool IsWithinSelectionBounds(GameObject gameObject)
-        {
-            var camera = Camera.main;
-            var viewportBounds = Utils.GetViewportBounds(camera, startPos, endPos);
-
-            return viewportBounds.Contains(camera.WorldToViewportPoint(gameObject.transform.position));
-        }
-
-        private void SelectUnitsInSelectionBox()
-        {
-            // Loop through all units to see if they are in the selection box
-            foreach (var selectableObject in FindObjectsOfType<SelectableUnit>())
-            {
-                if (IsWithinSelectionBounds(selectableObject.gameObject))
-                {
-                    selectableObject.Select();
-                }
-                else
-                {
-                    selectableObject.Deselect();
-                }
-            }
-        }
-
-        void OnGUI()
-        {
-            if (isSelecting)
-            {
-                // Create a rect from both mouse positions
-                var rect = Utils.GetScreenRect(startPos, endPos);
-                Utils.DrawScreenRect(rect, new Color(0.8f, 0.8f, 0.95f, 0.25f));
-                Utils.DrawScreenRectBorder(rect, 2, new Color(0.8f, 0.8f, 0.95f));
-            }
         }
     }
 }
