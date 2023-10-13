@@ -35,4 +35,18 @@ public class Utils : MonoBehaviour
         // Bottom
         Utils.DrawScreenRect(new Rect(rect.xMin, rect.yMax - thickness, rect.width, thickness), color);
     }
+
+    public static Bounds GetViewportBounds(Camera camera, Vector3 screenPosition1, Vector3 screenPosition2)
+    {
+        Vector3 v1 = Camera.main.ScreenToViewportPoint(screenPosition1);
+        Vector3 v2 = Camera.main.ScreenToViewportPoint(screenPosition2);
+        Vector3 min = Vector3.Min(v1, v2);
+        Vector3 max = Vector3.Max(v1, v2);
+        min.z = camera.nearClipPlane;
+        max.z = camera.farClipPlane;
+
+        Bounds bounds = new Bounds();
+        bounds.SetMinMax(min, max);
+        return bounds;
+    }
 }
