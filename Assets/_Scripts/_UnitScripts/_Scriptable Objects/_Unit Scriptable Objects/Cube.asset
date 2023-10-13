@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd7b85852ee01e54c887bfa6632280a9, type: 3}
   m_Name: Cube
   m_EditorClassIdentifier: 
-  unitType: 
-  description: 
+  unitType: Cube
+  description: A small cube
   attackDamage: 0
-  movementSpeed: 0
+  movementSpeed: 3
   health: 0
   armor: 0
   shield: 0
