@@ -4,15 +4,28 @@ using UnityEngine;
 
 public class SelectableUnit : MonoBehaviour
 {
-    // Start is called before the first frame update
+    public bool isSelected = false;
+    public GameObject selectionCircle;
+
     void Start()
     {
-        
+        selectionCircle.SetActive(false);
     }
 
-    // Update is called once per frame
-    void Update()
+    public void Select()
     {
-        
+        // Add your code to highlight the unit or show a selection circle
+        isSelected = true;
+    }
+
+    public void Deselect()
+    {
+        // Add your code to remove the highlight or hide the selection circle
+        isSelected = false;
+    }
+
+    public void OnClick()
+    {
+        // Code for what happens when this unit is clicked
     }
 }
