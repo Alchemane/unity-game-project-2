@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.AI.Navigation;
 using UnityEngine;
 
 namespace GameRoot.InGame.Environment.EnvironmentGeneration
@@ -17,6 +18,10 @@ namespace GameRoot.InGame.Environment.EnvironmentGeneration
 
         void Start()
         {
+            // Create a new GameObject to hold the NavMeshSurface component
+            GameObject navMeshSurfaceObj = new GameObject("NavMeshSurface");
+            NavMeshSurface navMeshSurface = navMeshSurfaceObj.AddComponent<NavMeshSurface>();
+
             // place the initial hexagon
             GameObject originHexagon = Instantiate(hexagonPrefab, Vector3.zero, Quaternion.identity);
             frontier.Add(originHexagon);
@@ -25,11 +30,14 @@ namespace GameRoot.InGame.Environment.EnvironmentGeneration
             // generate the rest of the hexagons
             for (int i = 0; i < mapSize - 1; i++)
             {
-                GenerateNeighbor();
+                GenerateNeighbor(i);
             }
+
+            // Bake the NavMesh after all hexagons are generated
+            navMeshSurface.BuildNavMesh();
         }
 
-        void GenerateNeighbor()
+        void GenerateNeighbor(int hexIndex)
         {
             int backtrackIndex = frontier.Count - 1;
             while (backtrackIndex >= 0)
@@ -40,6 +48,7 @@ namespace GameRoot.InGame.Environment.EnvironmentGeneration
                 if (!occupiedPositions.Contains(newPosition))
                 {
                     GameObject newHexagon = Instantiate(hexagonPrefab, newPosition, Quaternion.identity);
+                    newHexagon.name = "Hexagon" + " " + hexIndex;
                     UpdateBounds(newPosition); // update map data
                     frontier.Add(newHexagon);
                     occupiedPositions.Add(newPosition);

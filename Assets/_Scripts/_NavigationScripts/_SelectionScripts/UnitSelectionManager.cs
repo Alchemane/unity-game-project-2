@@ -46,7 +46,7 @@ namespace GameRoot.InGame.Navigation.SelectionSystem.UnitManager
 
         public void ShiftSelect(GameObject unit)
         {
-            if(selectedUnits.Contains(unit))
+            if (selectedUnits.Contains(unit))
             {
                 unit.transform.GetChild(0).gameObject.SetActive(false);
                 RemoveSelection(unit);
@@ -69,7 +69,7 @@ namespace GameRoot.InGame.Navigation.SelectionSystem.UnitManager
 
         public void DeselectAll()
         {
-            foreach(var unit in selectedUnits)
+            foreach (var unit in selectedUnits)
             {
                 if (unit != null)
                 {

@@ -19,7 +19,7 @@ namespace GameRoot.InGame.Units.Movement
 
         public void Update()
         {
-            if (Input.GetMouseButtonDown(1))
+            if (Input.GetMouseButtonDown(1) && !Input.GetKey(KeyCode.LeftShift))
             {
                 RaycastHit hit;
                 Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);

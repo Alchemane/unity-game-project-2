@@ -47,7 +47,7 @@ namespace GameRoot.InGame.Navigation.SelectionSystem.ClickSelection
                     }
                 }
             }
-            if (Input.GetMouseButtonDown(1))
+            if (Input.GetMouseButtonDown(1) && !Input.GetKey(KeyCode.LeftShift))
             {
                 RaycastHit hit;
                 Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);

@@ -123,7 +123,7 @@ namespace GameRoot.InGame.Navigation.CameraNavigation
                 {
                     rotateStartPosition = Input.mousePosition;
                 }
-                if (Input.GetMouseButton(1))
+                if (Input.GetMouseButton(1) && Input.GetKey(KeyCode.LeftShift))
                 {
                     rotateCurrentPosition = Input.mousePosition;
 

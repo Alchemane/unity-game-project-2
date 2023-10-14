@@ -12,11 +12,13 @@ namespace GameRoot.InGame.Navigation.SelectionSystem.DragSelection
         private Rect selectionRect;
         private Vector2 startPosition;
         private Vector2 endPosition;
-        public LayerMask selectableUnits;
+        private int selectableUnits = 6;
+
 
         // Start is called before the first frame update
         void Start()
         {
+            selectionBox.transform.parent.gameObject.SetActive(true);
             mainCamera = Camera.main;
             startPosition = Vector2.zero;
             endPosition = Vector2.zero;
