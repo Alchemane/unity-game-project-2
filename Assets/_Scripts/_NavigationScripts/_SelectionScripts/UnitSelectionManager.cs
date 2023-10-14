@@ -48,8 +48,8 @@ namespace GameRoot.InGame.Navigation.SelectionSystem.UnitManager
         {
             if(selectedUnits.Contains(unit))
             {
-                RemoveSelection(unit);
                 unit.transform.GetChild(0).gameObject.SetActive(false);
+                RemoveSelection(unit);
             }
             else
             {
@@ -62,8 +62,8 @@ namespace GameRoot.InGame.Navigation.SelectionSystem.UnitManager
         { 
             if (!selectedUnits.Contains(unit))
             {
-                AddSelection(unit);
                 unit.transform.GetChild(0).gameObject.SetActive(true);
+                AddSelection(unit);
             }
         }
 
